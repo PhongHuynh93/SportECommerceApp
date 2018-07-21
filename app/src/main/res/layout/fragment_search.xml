@@ -55,6 +55,8 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:text="Authentic World Cup Kits"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
                         android:textColor="@color/grey_light" android:textSize="22sp"/>
 
                     <com.google.android.material.textfield.TextInputLayout
@@ -66,8 +68,7 @@
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
                         android:textColorHint="@color/grey_medium_opa"
-                        app:boxStrokeColor="@color/grey_lightest"
-                        app:hintAnimationEnabled="true"
+                        app:boxStrokeColor="@color/grey_lightest" app:hintAnimationEnabled="true"
                         app:hintEnabled="true">
 
                         <com.google.android.material.textfield.TextInputEditText
