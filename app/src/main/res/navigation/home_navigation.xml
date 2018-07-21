@@ -2,29 +2,41 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools" android:id="@+id/home_navigation"
-            app:startDestination="@id/mainActivity">
+            app:startDestination="@id/searchFragment">
 
-    <activity android:id="@+id/mainActivity"
-              android:name="example.test.phong.coffeeapp.MainActivity" android:label="activity_main"
-              tools:layout="@layout/activity_main"/>
     <fragment android:id="@+id/searchFragment"
               android:name="example.test.phong.coffeeapp.SearchFragment"
-              android:label="fragment_search" tools:layout="@layout/fragment_search"/>
+              android:label="fragment_search" tools:layout="@layout/fragment_search">
+        <action android:id="@+id/action_searchFragment_to_detailFragment"
+                app:destination="@id/detailFragment"/>
+    </fragment>
     <fragment android:id="@+id/detailFragment"
               android:name="example.test.phong.coffeeapp.DetailFragment"
               android:label="fragment_detail" tools:layout="@layout/fragment_detail"/>
     <fragment android:id="@+id/cartFragment"
               android:name="example.test.phong.coffeeapp.CartFragment" android:label="fragment_cart"
-              tools:layout="@layout/fragment_cart"/>
+              tools:layout="@layout/fragment_cart">
+        <action android:id="@+id/action_cartFragment_to_shippingFragment"
+                app:destination="@id/shippingFragment"/>
+    </fragment>
     <fragment android:id="@+id/shippingFragment"
               android:name="example.test.phong.coffeeapp.ShippingFragment"
-              android:label="fragment_shipping" tools:layout="@layout/fragment_shipping"/>
+              android:label="fragment_shipping" tools:layout="@layout/fragment_shipping">
+        <action android:id="@+id/action_shippingFragment_to_paymentFragment"
+                app:destination="@id/paymentFragment"/>
+    </fragment>
     <fragment android:id="@+id/paymentFragment"
               android:name="example.test.phong.coffeeapp.PaymentFragment"
-              android:label="fragment_payment" tools:layout="@layout/fragment_payment"/>
+              android:label="fragment_payment" tools:layout="@layout/fragment_payment">
+        <action android:id="@+id/action_paymentFragment_to_reviewFragment"
+                app:destination="@id/reviewFragment"/>
+    </fragment>
     <fragment android:id="@+id/reviewFragment"
               android:name="example.test.phong.coffeeapp.ReviewFragment"
-              android:label="fragment_review" tools:layout="@layout/fragment_review"/>
+              android:label="fragment_review" tools:layout="@layout/fragment_review">
+        <action android:id="@+id/action_reviewFragment_to_thankYouFragment"
+                app:destination="@id/thankYouFragment"/>
+    </fragment>
     <fragment android:id="@+id/thankYouFragment"
               android:name="example.test.phong.coffeeapp.ThankYouFragment"
               android:label="fragment_thank_you" tools:layout="@layout/fragment_thank_you"/>
