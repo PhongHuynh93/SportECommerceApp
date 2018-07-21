@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">@android:color/white</color>
+    <color name="colorPrimaryDark">@android:color/white</color>
+    <color name="colorAccent">@color/green</color>
+
+    <color name="product_name">@color/grey_medium</color>
+    <color name="product_company">@color/grey_light</color>
+    <color name="product_cost">@color/grey_medium</color>
+    <color name="add_cart">@color/green</color>
+
+    <!--private color-->
+    <color name="green">#00bcd4</color>
+    <color name="grey_medium">#263238</color>
+    <color name="grey_light">#78909C</color>
+    <color name="grey_lightest">#dedede</color>
+    <color name="blue">#2196f3</color>
 </resources>

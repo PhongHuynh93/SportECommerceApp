@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/home_navigation"
+            app:startDestination="@id/mainActivity">
+
+    <activity android:id="@+id/mainActivity"
+              android:name="example.test.phong.coffeeapp.MainActivity" android:label="activity_main"
+              tools:layout="@layout/activity_main"/>
+    <fragment android:id="@+id/searchFragment"
+              android:name="example.test.phong.coffeeapp.SearchFragment"
+              android:label="fragment_search" tools:layout="@layout/fragment_search"/>
+    <fragment android:id="@+id/detailFragment"
+              android:name="example.test.phong.coffeeapp.DetailFragment"
+              android:label="fragment_detail" tools:layout="@layout/fragment_detail"/>
+    <fragment android:id="@+id/cartFragment"
+              android:name="example.test.phong.coffeeapp.CartFragment" android:label="fragment_cart"
+              tools:layout="@layout/fragment_cart"/>
+    <fragment android:id="@+id/shippingFragment"
+              android:name="example.test.phong.coffeeapp.ShippingFragment"
+              android:label="fragment_shipping" tools:layout="@layout/fragment_shipping"/>
+    <fragment android:id="@+id/paymentFragment"
+              android:name="example.test.phong.coffeeapp.PaymentFragment"
+              android:label="fragment_payment" tools:layout="@layout/fragment_payment"/>
+    <fragment android:id="@+id/reviewFragment"
+              android:name="example.test.phong.coffeeapp.ReviewFragment"
+              android:label="fragment_review" tools:layout="@layout/fragment_review"/>
+    <fragment android:id="@+id/thankYouFragment"
+              android:name="example.test.phong.coffeeapp.ThankYouFragment"
+              android:label="fragment_thank_you" tools:layout="@layout/fragment_thank_you"/>
+</navigation>
