@@ -1,153 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+    tools:context=".SearchFragment">
 
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/main_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".ui.HomeActivity">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar"
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlways"
+            app:titleEnabled="false">
 
-            <com.google.android.material.appbar.CollapsingToolbarLayout
+            <LinearLayout
+                android:id="@+id/rootSearchKit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleEnabled="false"
-                app:layout_scrollFlags="scroll|exitUntilCollapsed|snap|enterAlways">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    app:layout_collapseMode="pin"
-                    app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-                <LinearLayout
-                    android:id="@+id/rootSearchKit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="?attr/actionBarSize"
-                    android:orientation="vertical"
-                    app:layout_collapseMode="parallax"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/textView4"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:text="Authentic World Cup Kits"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:textColor="@color/grey_light" android:textSize="22sp"/>
-
-                    <TextView
-                        android:id="@+id/editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:drawableLeft="@drawable/ic_search"
-                        android:textColor="@color/grey_lightest"
-                        android:drawablePadding="13dp"
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="Search Kits"
-                        android:background="@drawable/outline_bg"/>
-                </LinearLayout>
-
-            </com.google.android.material.appbar.CollapsingToolbarLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/root"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:context=".SearchFragment">
-
-            <ImageView
-                android:id="@+id/imgv_grid1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:paddingStart="@dimen/space_micro"
-                android:paddingTop="@dimen/space_medium"
-                android:paddingRight="@dimen/space_micro"
-                android:paddingBottom="@dimen/space_medium"
-                android:src="@drawable/ic_id_grid_1"
-                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
-            <ImageView
-                android:id="@+id/imgv_grid2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/space_small_medium"
-                android:paddingStart="@dimen/space_micro"
-                android:paddingTop="@dimen/space_medium"
-                android:paddingRight="@dimen/space_micro"
-                android:paddingBottom="@dimen/space_medium"
-                android:src="@drawable/ic_grid_2"
-                app:layout_constraintStart_toEndOf="@+id/imgv_grid1"
-                app:layout_constraintTop_toTopOf="@+id/imgv_grid1"/>
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/textView5"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:text="sort"
-                android:textAllCaps="true"
-                android:textColor="@color/grey_light"
-                app:layout_constraintBottom_toBottomOf="@+id/imgv_grid1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/imgv_grid1"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/textView6"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="filter"
-                android:textAllCaps="true"
-                android:textColor="@color/grey_light"
-                app:layout_constraintBottom_toBottomOf="@+id/textView5"
-                app:layout_constraintEnd_toStartOf="@+id/textView5"
-                app:layout_constraintTop_toTopOf="@+id/textView5"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rcv"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="16dp"
-                android:scrollbars="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="?attr/actionBarSize"
+                android:orientation="vertical"
+                app:layout_collapseMode="parallax"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imgv_grid1"
-                tools:listitem="@layout/item_product"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
-</androidx.drawerlayout.widget.DrawerLayout>
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/textView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="Authentic World Cup Kits"
+                    android:textColor="@color/grey_light" android:textSize="22sp"/>
+
+                <TextView
+                    android:id="@+id/editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@drawable/outline_roundable_rect"
+                    android:drawableLeft="@drawable/ic_search"
+                    android:drawablePadding="13dp"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="10dp"
+                    android:text="Search Kits"
+                    android:textColor="@color/grey_lightest"/>
+            </LinearLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:context=".SearchFragment">
+
+        <ImageView
+            android:id="@+id/imgv_grid1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:paddingStart="@dimen/space_micro"
+            android:paddingTop="@dimen/space_medium"
+            android:paddingRight="@dimen/space_micro"
+            android:paddingBottom="@dimen/space_medium"
+            android:src="@drawable/ic_id_grid_1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+        <ImageView
+            android:id="@+id/imgv_grid2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/space_small_medium"
+            android:paddingStart="@dimen/space_micro"
+            android:paddingTop="@dimen/space_medium"
+            android:paddingRight="@dimen/space_micro"
+            android:paddingBottom="@dimen/space_medium"
+            android:src="@drawable/ic_grid_2"
+            app:layout_constraintStart_toEndOf="@+id/imgv_grid1"
+            app:layout_constraintTop_toTopOf="@+id/imgv_grid1"/>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/textView5"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="sort"
+            android:textAllCaps="true"
+            android:textColor="@color/grey_light"
+            app:layout_constraintBottom_toBottomOf="@+id/imgv_grid1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imgv_grid1"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/textView6"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="filter"
+            android:textAllCaps="true"
+            android:textColor="@color/grey_light"
+            app:layout_constraintBottom_toBottomOf="@+id/textView5"
+            app:layout_constraintEnd_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/textView5"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcv"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:scrollbars="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgv_grid1"
+            tools:listitem="@layout/item_product"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

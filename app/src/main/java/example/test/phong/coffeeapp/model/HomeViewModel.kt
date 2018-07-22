@@ -1,4 +1,4 @@
-package example.test.phong.coffeeapp
+package example.test.phong.coffeeapp.model
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel;

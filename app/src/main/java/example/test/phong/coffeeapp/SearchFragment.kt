@@ -6,14 +6,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestManager
 import com.google.android.material.appbar.AppBarLayout
+import example.test.phong.coffeeapp.model.ProductModel
+import example.test.phong.coffeeapp.utils.load
+import example.test.phong.coffeeapp.utils.setUpToolbar
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.item_product.view.*
 
@@ -29,16 +30,7 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (activity is AppCompatActivity) {
-            (activity as AppCompatActivity).setSupportActionBar(toolbar)
-
-            val actionbar: ActionBar? = (activity as AppCompatActivity).supportActionBar
-            actionbar?.apply {
-                setDisplayHomeAsUpEnabled(true)
-                setHomeAsUpIndicator(R.drawable.ic_hamguber)
-                setTitle(R.string.title_product_page)
-            }
-        }
+        activity!!.setUpToolbar(toolbar)
 
         appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, offset ->
             // hide the text when scroll
@@ -50,14 +42,22 @@ class SearchFragment : Fragment() {
 
         rcv?.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = SearchAdapter(Glide.with(this))
+            adapter = SearchAdapter {
+                val testUrl = "https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg"
+                val bundle = bundleOf(DetailFragment.ARGUMENT_KEY to ProductModel(testUrl, "Brasil Home 2018", "$165"))
+                Navigation.findNavController(it).navigate(R.id.action_searchFragment_to_detailFragment, bundle)
+            }
         }
     }
 }
 
-class SearchAdapter(private val requestManager: RequestManager) : RecyclerView.Adapter<SearchVH>() {
+class SearchAdapter(val listener:(view: View) -> Unit) : RecyclerView.Adapter<SearchVH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchVH {
-        return SearchVH(LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false))
+        val searchVH = SearchVH(LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false))
+        searchVH.itemView.setOnClickListener {
+            listener(it)
+        }
+        return searchVH
     }
 
     override fun getItemCount(): Int {
@@ -65,7 +65,7 @@ class SearchAdapter(private val requestManager: RequestManager) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
-        requestManager.load("https://cdn.childrensalon.com/media/catalog/product/cache/0/image/1000x1000/9df78eab33525d08d6e5fb8d27136e95/d/o/dolce-gabbana-girls-pink-dog-t-shirt-195570-45fc962da3d44dec60ddc78fcc456ed9fcb58c79.jpg").into(holder.itemView.imgvThumb)
+        holder.itemView.imgvThumb.load("https://media.gucci.com/style/DarkGray_South_0_160_316x316/1519961405/469307_X9D35_9230_001_100_0000_Light-Oversize-collared-T-shirt-with-Gucci-logo.jpg")
     }
 
 }
