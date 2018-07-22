@@ -12,6 +12,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@null"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -40,7 +41,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:text="Authentic World Cup Kits"
-                    android:textColor="@color/grey_light" android:textSize="22sp"/>
+                    android:textColor="@color/grey_light"
+                    android:textSize="22sp"/>
 
                 <TextView
                     android:id="@+id/editText"

@@ -89,13 +89,16 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
-            BaseTypeModel.SIZE_PRODUCT -> LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false)
-            BaseTypeModel.KIT_PRODUCT -> LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false)
-            BaseTypeModel.SIMPLE_QUANTITY -> LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false)
-            BaseTypeModel.EXPANDABLE_TEXT -> LayoutInflater.from(parent.context).inflate(R.layout.item_expandable, parent, false)
-            BaseTypeModel.SIMPLE_BUTTON -> LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false)
-            BaseTypeModel.SIMPLE_TEXT -> LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false)
-            BaseTypeModel.RELATED_PRODUCT -> LayoutInflater.from(parent.context).inflate(R.layout.item_related_product, parent, false)
+            BaseTypeModel.SIZE_PRODUCT -> return SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false))
+            BaseTypeModel.KIT_PRODUCT -> return KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
+            BaseTypeModel.SIMPLE_QUANLITY -> return SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
+            BaseTypeModel.EXPANDABLE_TEXT -> return ExpandableTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable, parent, false))
+            BaseTypeModel.SIMPLE_BUTTON -> return SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
+            BaseTypeModel.SIMPLE_TEXT -> return SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
+            BaseTypeModel.RELATED_PRODUCT -> return RelatedProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_related_product, parent, false))
+            else -> {
+                throw IllegalStateException()
+            }
         }
     }
 
@@ -104,6 +107,34 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
     }
+
+}
+
+class RelatedProductVH(view: View) : RecyclerView.ViewHolder(view) {
+
+}
+
+class SimpleTextVH(view: View) : RecyclerView.ViewHolder(view) {
+
+}
+
+class SimpleButtonVH(view: View) : RecyclerView.ViewHolder(view) {
+
+}
+
+class ExpandableTextVH(view: View) : RecyclerView.ViewHolder(view) {
+
+}
+
+class SimpleQuanlityProductVH(view: View) : RecyclerView.ViewHolder(view) {
+
+}
+
+class KitProductVH(view: View) : RecyclerView.ViewHolder(view) {
+
+}
+
+class SizeProductVH(view: View) : RecyclerView.ViewHolder(view) {
 
 }
 

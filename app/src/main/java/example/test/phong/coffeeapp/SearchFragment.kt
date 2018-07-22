@@ -65,7 +65,7 @@ class SearchAdapter(val listener:(view: View) -> Unit) : RecyclerView.Adapter<Se
     }
 
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
-        holder.itemView.imgvThumb.load("https://media.gucci.com/style/DarkGray_South_0_160_316x316/1519961405/469307_X9D35_9230_001_100_0000_Light-Oversize-collared-T-shirt-with-Gucci-logo.jpg")
+        holder.itemView.imgvThumb.load("https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg")
     }
 
 }
