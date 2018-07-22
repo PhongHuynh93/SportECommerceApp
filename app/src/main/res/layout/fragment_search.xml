@@ -59,26 +59,22 @@
                         android:focusableInTouchMode="true"
                         android:textColor="@color/grey_light" android:textSize="22sp"/>
 
-                    <com.google.android.material.textfield.TextInputLayout
+                    <TextView
                         android:id="@+id/editText"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:textColorHint="@color/grey_medium_opa"
-                        app:boxStrokeColor="@color/grey_lightest" app:hintAnimationEnabled="true"
-                        app:hintEnabled="true">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/edt_search"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Search Kits"
-                            android:textColorHint="@color/grey_medium_opa"
-                            android:textColorLink="@color/grey_medium_opa"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:drawableLeft="@drawable/ic_search"
+                        android:textColor="@color/grey_lightest"
+                        android:drawablePadding="13dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="Search Kits"
+                        android:background="@drawable/outline_bg"/>
                 </LinearLayout>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -91,7 +87,6 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:context=".SearchFragment">
 
-
             <ImageView
                 android:id="@+id/imgv_grid1"
                 android:layout_width="wrap_content"
@@ -103,8 +98,7 @@
                 android:paddingRight="@dimen/space_micro"
                 android:paddingBottom="@dimen/space_medium"
                 android:src="@drawable/ic_id_grid_1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
             <ImageView
                 android:id="@+id/imgv_grid2"
                 android:layout_width="wrap_content"
@@ -117,26 +111,32 @@
                 android:src="@drawable/ic_grid_2"
                 app:layout_constraintStart_toEndOf="@+id/imgv_grid1"
                 app:layout_constraintTop_toTopOf="@+id/imgv_grid1"/>
-            <TextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/textView5"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp" android:text="sort"
+                android:layout_marginEnd="16dp"
+                android:text="sort"
                 android:textAllCaps="true"
                 android:textColor="@color/grey_light"
                 app:layout_constraintBottom_toBottomOf="@+id/imgv_grid1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/imgv_grid1"/>
-            <TextView
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/textView6"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp" android:text="filter"
+                android:layout_marginEnd="10dp"
+                android:text="filter"
                 android:textAllCaps="true"
                 android:textColor="@color/grey_light"
                 app:layout_constraintBottom_toBottomOf="@+id/textView5"
                 app:layout_constraintEnd_toStartOf="@+id/textView5"
                 app:layout_constraintTop_toTopOf="@+id/textView5"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcv"
                 android:layout_width="0dp"

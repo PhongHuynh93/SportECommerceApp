@@ -65,7 +65,7 @@ class SearchAdapter(private val requestManager: RequestManager) : RecyclerView.A
     }
 
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
-        requestManager.load("https://vn-live.slatic.net/original/c4cc287e5e7d3cbb4f9babdb1c16d1b1.jpg").into(holder.itemView.imgvThumb)
+        requestManager.load("https://cdn.childrensalon.com/media/catalog/product/cache/0/image/1000x1000/9df78eab33525d08d6e5fb8d27136e95/d/o/dolce-gabbana-girls-pink-dog-t-shirt-195570-45fc962da3d44dec60ddc78fcc456ed9fcb58c79.jpg").into(holder.itemView.imgvThumb)
     }
 
 }
