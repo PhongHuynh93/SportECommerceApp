@@ -7,4 +7,5 @@
     <dimen name="size_thumb_item">112dp</dimen>
 
     <dimen name="font_normal">14sp</dimen>
+    <dimen name="space_large">24dp</dimen>
 </resources>

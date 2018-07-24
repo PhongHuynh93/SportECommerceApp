@@ -4,6 +4,7 @@ interface BaseTypeModel {
     fun getType(): Int
 
     companion object {
+        const val NAME_PRODUCT: Int = 7
         const val SIZE_PRODUCT: Int = 0
         const val KIT_PRODUCT: Int = 1
         const val SIMPLE_QUANLITY: Int = 2

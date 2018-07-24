@@ -1,6 +1,9 @@
 package example.test.phong.coffeeapp
 
 
+import android.content.Context
+import android.graphics.Color
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.NAME_PRODUCT
 import example.test.phong.coffeeapp.model.*
 import example.test.phong.coffeeapp.utils.load
 import example.test.phong.coffeeapp.utils.setUpToolbar
 import example.test.phong.coffeeapp.view.SquareImageView
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.item_name_product.view.*
+import kotlinx.android.synthetic.main.item_size_product.view.*
 
 
 class DetailFragment : Fragment() {
@@ -31,20 +37,33 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity!!.setUpToolbar(toolbar)
-        val firstThumb = arguments!!.getParcelable<ProductModel>(ARGUMENT_KEY).thumb
+        val chosenProduct = arguments!!.getParcelable<ProductModel>(ARGUMENT_KEY)
 
         vg?.apply {
-            adapter = DetailPagerAdapter(firstThumb)
+            adapter = DetailPagerAdapter(chosenProduct)
         }
 
         rcv?.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = DetailAdapter()
+            adapter = DetailAdapter(chosenProduct)
+            addItemDecoration(DetailSpacingItemDecoration(context, adapter as DetailAdapter))
         }
     }
 }
 
-class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+private class DetailSpacingItemDecoration(val context: Context, val adapter: DetailAdapter) : RecyclerView.ItemDecoration() {
+    private var mSpaceLarge: Float = context.resources.getDimension(R.dimen.space_large)
+
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        val adapterPosition = parent.getChildAdapterPosition(view)
+        if (adapterPosition == RecyclerView.NO_POSITION) return
+        if (adapter.getItemViewType(adapterPosition) != NAME_PRODUCT) {
+            outRect.top = mSpaceLarge.toInt()
+        }
+    }
+}
+
+class DetailAdapter(private val chosenProduct: ProductModel) : RecyclerView.Adapter<BaseProductVH>() {
     private val mDataList: MutableList<BaseTypeModel> = ArrayList()
 
     init {
@@ -52,12 +71,13 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     }
 
     private fun analyzeData() {
+        mDataList.add(chosenProduct)
         mDataList.add(SizeProductModel(arrayListOf(
-                StateSizeProduct(false, "s"),
-                StateSizeProduct(true, "m"),
-                StateSizeProduct(true, "l"),
-                StateSizeProduct(false, "xl"),
-                StateSizeProduct(false, "xxl"))))
+                StateSizeProduct(false, SizeType.S),
+                StateSizeProduct(true, SizeType.M),
+                StateSizeProduct(true, SizeType.L),
+                StateSizeProduct(false, SizeType.XL),
+                StateSizeProduct(false, SizeType.XXL))))
 
         mDataList.add(KitProductModel(arrayListOf("home", "away", "third")))
         mDataList.add(QuantityProductModel())
@@ -74,12 +94,12 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         "\n"))
         mDataList.add(HeaderModel("You May Also Like"))
         mDataList.add(RelatedProductModel(arrayListOf(
-                ProductModel("https://media.gucci.com/style/DarkGray_South_0_160_316x316/1519961405/469307_X9D35_9230_001_100_0000_Light-Oversize-collared-T-shirt-with-Gucci-logo.jpg", "Brasil Home 2018", "$165"),
-                ProductModel("https://zkshirt.com/wp-content/uploads/2018/01/Disney-Mickey-Gucci-Sweatshirt.jpg", "Night Maroon Foamposite Match", "$165"),
-                ProductModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLs2WJDg9lCBo19q8DOjYj1QR4z7XrsvjXryI5DgRev4RlQV0h8w", "Black Gucci Foamposite Shirts", "$165"),
-                ProductModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLFeHWbEm2C8NjlUZ14JuBugLstmCJe5P9V3Ym8W01Fi-preto", "PENNYS CENTS- Nike Foamposite", "$165"),
-                ProductModel("https://res-1.cloudinary.com/italist/image/upload/t_zoom_v2/347764f2fa4d09e4eecc005000839335.jpg", "Vintage Gucci", "$165"),
-                ProductModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGJWtB0p_s6ewhWp60zgwJUpt4jYlyho7ND-BqNEJl_BbechYd", "Black Gucci Foamposite Shirts", "$165")
+                ProductModel("https://media.gucci.com/style/DarkGray_South_0_160_316x316/1519961405/469307_X9D35_9230_001_100_0000_Light-Oversize-collared-T-shirt-with-Gucci-logo.jpg", "Brasil Home 2018", "adidas", "$165"),
+                ProductModel("https://zkshirt.com/wp-content/uploads/2018/01/Disney-Mickey-Gucci-Sweatshirt.jpg", "Night Maroon Foamposite Match", "adidas", "$165"),
+                ProductModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLs2WJDg9lCBo19q8DOjYj1QR4z7XrsvjXryI5DgRev4RlQV0h8w", "Black Gucci Foamposite Shirts", "adidas", "$165"),
+                ProductModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTLFeHWbEm2C8NjlUZ14JuBugLstmCJe5P9V3Ym8W01Fi-preto", "PENNYS CENTS- Nike Foamposite", "adidas", "$165"),
+                ProductModel("https://res-1.cloudinary.com/italist/image/upload/t_zoom_v2/347764f2fa4d09e4eecc005000839335.jpg", "Vintage Gucci", "adidas", "$165"),
+                ProductModel("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGJWtB0p_s6ewhWp60zgwJUpt4jYlyho7ND-BqNEJl_BbechYd", "Black Gucci Foamposite Shirts", "adidas", "$165")
         )))
     }
 
@@ -87,15 +107,16 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         return mDataList[position].getType()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        when (viewType) {
-            BaseTypeModel.SIZE_PRODUCT -> return SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false))
-            BaseTypeModel.KIT_PRODUCT -> return KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
-            BaseTypeModel.SIMPLE_QUANLITY -> return SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
-            BaseTypeModel.EXPANDABLE_TEXT -> return ExpandableTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable, parent, false))
-            BaseTypeModel.SIMPLE_BUTTON -> return SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
-            BaseTypeModel.SIMPLE_TEXT -> return SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
-            BaseTypeModel.RELATED_PRODUCT -> return RelatedProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_related_product, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseProductVH {
+        return when (viewType) {
+            BaseTypeModel.NAME_PRODUCT -> NameProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_name_product, parent, false))
+            BaseTypeModel.SIZE_PRODUCT -> SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false))
+            BaseTypeModel.KIT_PRODUCT -> KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
+            BaseTypeModel.SIMPLE_QUANLITY -> SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
+            BaseTypeModel.EXPANDABLE_TEXT -> ExpandableTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable, parent, false))
+            BaseTypeModel.SIMPLE_BUTTON -> SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
+            BaseTypeModel.SIMPLE_TEXT -> SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
+            BaseTypeModel.RELATED_PRODUCT -> RelatedProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_related_product, parent, false))
             else -> {
                 throw IllegalStateException()
             }
@@ -104,41 +125,85 @@ class DetailAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemCount() = mDataList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: BaseProductVH, position: Int) {
+        holder.bindModel(mDataList.get(position))
+    }
+}
 
+
+abstract class BaseProductVH(view: View) : RecyclerView.ViewHolder(view) {
+    abstract fun bindModel(model: BaseTypeModel)
+}
+
+class NameProductVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+        if (model is ProductModel) {
+            itemView.tvName.text = model.name
+            itemView.tvBrand.text = model.brand
+            itemView.tvPrice.text = model.price
+        }
+    }
+}
+
+class SizeProductVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+        if (model is SizeProductModel) {
+            itemView.tvHome.text = model.listSize[0].sizeName.toString()
+            itemView.tvHome.setTextColor(Color.parseColor("#4d455a64"))
+            itemView.tvHome.setBackgroundResource(R.drawable.fill_disable_rect)
+
+            itemView.tvAway.text = model.listSize[1].sizeName.toString()
+            itemView.tvAway.setTextColor(Color.parseColor("#455a64"))
+            itemView.tvAway.setBackgroundResource(R.drawable.outline_unselect_rect)
+
+            itemView.tvThird.text = model.listSize[2].sizeName.toString()
+            itemView.tvThird.setTextColor(Color.parseColor("#ffffff"))
+            itemView.tvThird.setBackgroundResource(R.drawable.outline_select_rect)
+
+            itemView.tvXL.text = model.listSize[3].sizeName.toString()
+            itemView.tvXL.setTextColor(Color.parseColor("#4d455a64"))
+            itemView.tvXL.setBackgroundResource(R.drawable.fill_disable_rect)
+
+            itemView.tvXXL.text = model.listSize[4].sizeName.toString()
+            itemView.tvXXL.setTextColor(Color.parseColor("#4d455a64"))
+            itemView.tvXXL.setBackgroundResource(R.drawable.fill_disable_rect)
+        }
+    }
+}
+
+class RelatedProductVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
     }
 
 }
 
-class RelatedProductVH(view: View) : RecyclerView.ViewHolder(view) {
-
+class SimpleTextVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+    }
 }
 
-class SimpleTextVH(view: View) : RecyclerView.ViewHolder(view) {
-
+class SimpleButtonVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+    }
 }
 
-class SimpleButtonVH(view: View) : RecyclerView.ViewHolder(view) {
-
+class ExpandableTextVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+    }
 }
 
-class ExpandableTextVH(view: View) : RecyclerView.ViewHolder(view) {
-
+class SimpleQuanlityProductVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+    }
 }
 
-class SimpleQuanlityProductVH(view: View) : RecyclerView.ViewHolder(view) {
-
+class KitProductVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+    }
 }
 
-class KitProductVH(view: View) : RecyclerView.ViewHolder(view) {
 
-}
-
-class SizeProductVH(view: View) : RecyclerView.ViewHolder(view) {
-
-}
-
-class DetailPagerAdapter(private val firstThumb: String) : PagerAdapter() {
+class DetailPagerAdapter(private val chosenProduct: ProductModel) : PagerAdapter() {
     override fun isViewFromObject(arg0: View, arg1: Any): Boolean {
         return arg0 == arg1
     }
@@ -150,7 +215,7 @@ class DetailPagerAdapter(private val firstThumb: String) : PagerAdapter() {
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         return SquareImageView(container.context).apply {
             layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            load(firstThumb, true)
+            load(chosenProduct.thumb, true)
             container.addView(this)
         }
     }

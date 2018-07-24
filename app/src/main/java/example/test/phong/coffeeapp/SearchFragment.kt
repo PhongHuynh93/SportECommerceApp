@@ -44,7 +44,7 @@ class SearchFragment : Fragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = SearchAdapter {
                 val testUrl = "https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg"
-                val bundle = bundleOf(DetailFragment.ARGUMENT_KEY to ProductModel(testUrl, "Brasil Home 2018", "$165"))
+                val bundle = bundleOf(DetailFragment.ARGUMENT_KEY to ProductModel(testUrl, "Brasil Home 2018", "adias", "$165"))
                 Navigation.findNavController(it).navigate(R.id.action_searchFragment_to_detailFragment, bundle)
             }
         }

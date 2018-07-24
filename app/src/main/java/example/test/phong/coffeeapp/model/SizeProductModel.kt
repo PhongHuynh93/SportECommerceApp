@@ -6,4 +6,8 @@ data class SizeProductModel(val listSize: ArrayList<StateSizeProduct>): BaseType
     override fun getType() = BaseTypeModel.SIZE_PRODUCT
 }
 
-data class StateSizeProduct(val available: Boolean, val sizeName: String)
+data class StateSizeProduct(val available: Boolean, val sizeName: SizeType)
+
+public enum class SizeType {
+    S, M, L, XL, XXL
+}
