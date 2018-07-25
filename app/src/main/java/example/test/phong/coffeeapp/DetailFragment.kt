@@ -2,6 +2,7 @@ package example.test.phong.coffeeapp
 
 
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
@@ -20,12 +21,17 @@ import example.test.phong.coffeeapp.utils.setUpToolbar
 import example.test.phong.coffeeapp.view.SquareImageView
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.item_name_product.view.*
+import kotlinx.android.synthetic.main.item_quantity.view.*
 import kotlinx.android.synthetic.main.item_size_product.view.*
 
 
 class DetailFragment : Fragment() {
+    private var currentQuantity: Int = 0
     companion object {
         val ARGUMENT_KEY = "argument_key"
+    }
+    private val mOnClick = View.OnClickListener {
+        
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -61,9 +67,13 @@ private class DetailSpacingItemDecoration(val context: Context, val adapter: Det
             outRect.top = mSpaceLarge.toInt()
         }
     }
+
+    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDraw(c, parent, state)
+    }
 }
 
-class DetailAdapter(private val chosenProduct: ProductModel) : RecyclerView.Adapter<BaseProductVH>() {
+class DetailAdapter(private val chosenProduct: ProductModel, private val mOnClick: View.OnClickListener? = null) : RecyclerView.Adapter<BaseProductVH>() {
     private val mDataList: MutableList<BaseTypeModel> = ArrayList()
 
     init {
@@ -80,7 +90,7 @@ class DetailAdapter(private val chosenProduct: ProductModel) : RecyclerView.Adap
                 StateSizeProduct(false, SizeType.XXL))))
 
         mDataList.add(KitProductModel(arrayListOf("home", "away", "third")))
-        mDataList.add(QuantityProductModel())
+        mDataList.add(QuantityProductModel(0))
         mDataList.add(ExpandableTextModel("Customize Your Jersey",
                 "Gucci patch in SEGA font, used with permission of Sega Holdings Co., Ltd.\n" +
                         "Front patch pockets\n" +
@@ -112,7 +122,26 @@ class DetailAdapter(private val chosenProduct: ProductModel) : RecyclerView.Adap
             BaseTypeModel.NAME_PRODUCT -> NameProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_name_product, parent, false))
             BaseTypeModel.SIZE_PRODUCT -> SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false))
             BaseTypeModel.KIT_PRODUCT -> KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
-            BaseTypeModel.SIMPLE_QUANLITY -> SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
+            BaseTypeModel.SIMPLE_QUANTITY -> {
+                val vh = SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
+                vh.itemView.tvIncrease.setOnClickListener {
+                    val itemAtPos = mDataList[vh.adapterPosition]
+                    if (itemAtPos is QuantityProductModel) {
+                        vh.itemView.tvQuantity.setCurrentText(itemAtPos.quantity.toString())
+                        itemAtPos.quantity += 1
+                        vh.itemView.tvQuantity.setText(itemAtPos.quantity.toString())
+                    }
+                }
+                vh.itemView.tvDecrease.setOnClickListener {
+                    val itemAtPos = mDataList[vh.adapterPosition]
+                    if (itemAtPos is QuantityProductModel) {
+                        vh.itemView.tvQuantity.setCurrentText(itemAtPos.quantity.toString())
+                        itemAtPos.quantity = Math.max(0, itemAtPos.quantity - 1)
+                        vh.itemView.tvQuantity.setText(itemAtPos.quantity.toString())
+                    }
+                }
+                return vh
+            }
             BaseTypeModel.EXPANDABLE_TEXT -> ExpandableTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable, parent, false))
             BaseTypeModel.SIMPLE_BUTTON -> SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
             BaseTypeModel.SIMPLE_TEXT -> SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
@@ -148,25 +177,25 @@ class NameProductVH(view: View) : BaseProductVH(view) {
 class SizeProductVH(view: View) : BaseProductVH(view) {
     override fun bindModel(model: BaseTypeModel) {
         if (model is SizeProductModel) {
-            itemView.tvHome.text = model.listSize[0].sizeName.toString()
-            itemView.tvHome.setTextColor(Color.parseColor("#4d455a64"))
-            itemView.tvHome.setBackgroundResource(R.drawable.fill_disable_rect)
+            itemView.tvSize1.text = model.listSize[0].sizeName.toString()
+            itemView.tvSize1.setTextColor(Color.parseColor("#4d455a64"))
+            itemView.tvSize1.setBackgroundResource(R.drawable.fill_disable_rect)
 
-            itemView.tvAway.text = model.listSize[1].sizeName.toString()
-            itemView.tvAway.setTextColor(Color.parseColor("#455a64"))
-            itemView.tvAway.setBackgroundResource(R.drawable.outline_unselect_rect)
+            itemView.tvSize2.text = model.listSize[1].sizeName.toString()
+            itemView.tvSize2.setTextColor(Color.parseColor("#455a64"))
+            itemView.tvSize2.setBackgroundResource(R.drawable.outline_unselect_rect)
 
-            itemView.tvThird.text = model.listSize[2].sizeName.toString()
-            itemView.tvThird.setTextColor(Color.parseColor("#ffffff"))
-            itemView.tvThird.setBackgroundResource(R.drawable.outline_select_rect)
+            itemView.tvSize3.text = model.listSize[2].sizeName.toString()
+            itemView.tvSize3.setTextColor(Color.parseColor("#ffffff"))
+            itemView.tvSize3.setBackgroundResource(R.drawable.outline_select_rect)
 
-            itemView.tvXL.text = model.listSize[3].sizeName.toString()
-            itemView.tvXL.setTextColor(Color.parseColor("#4d455a64"))
-            itemView.tvXL.setBackgroundResource(R.drawable.fill_disable_rect)
+            itemView.tvSize4.text = model.listSize[3].sizeName.toString()
+            itemView.tvSize4.setTextColor(Color.parseColor("#4d455a64"))
+            itemView.tvSize4.setBackgroundResource(R.drawable.fill_disable_rect)
 
-            itemView.tvXXL.text = model.listSize[4].sizeName.toString()
-            itemView.tvXXL.setTextColor(Color.parseColor("#4d455a64"))
-            itemView.tvXXL.setBackgroundResource(R.drawable.fill_disable_rect)
+            itemView.tvSize5.text = model.listSize[4].sizeName.toString()
+            itemView.tvSize5.setTextColor(Color.parseColor("#4d455a64"))
+            itemView.tvSize5.setBackgroundResource(R.drawable.fill_disable_rect)
         }
     }
 }
@@ -194,6 +223,9 @@ class ExpandableTextVH(view: View) : BaseProductVH(view) {
 
 class SimpleQuanlityProductVH(view: View) : BaseProductVH(view) {
     override fun bindModel(model: BaseTypeModel) {
+        if (model is QuantityProductModel) {
+            itemView.tvQuantity.setCurrentText(model.quantity.toString())
+        }
     }
 }
 

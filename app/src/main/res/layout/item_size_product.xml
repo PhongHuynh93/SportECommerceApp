@@ -13,7 +13,7 @@
         android:text="Size" app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
     <TextView
-        android:id="@+id/tvHome"
+        android:id="@+id/tvSize1"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
@@ -21,45 +21,45 @@
         android:gravity="center"
         android:text="S"
         app:layout_constraintBottom_toBottomOf="@+id/textViewSize"
-        app:layout_constraintEnd_toStartOf="@+id/tvAway"
+        app:layout_constraintEnd_toStartOf="@+id/tvSize2"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toEndOf="@+id/textViewSize" app:layout_constraintTop_toTopOf="@+id/textViewSize"/>
     <TextView
-        android:id="@+id/tvAway"
+        android:id="@+id/tvSize2"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:gravity="center"
         android:text="S"
         app:layout_constraintBottom_toBottomOf="@+id/textViewSize"
-        app:layout_constraintEnd_toStartOf="@+id/tvThird"
+        app:layout_constraintEnd_toStartOf="@+id/tvSize3"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvHome"
+        app:layout_constraintStart_toEndOf="@+id/tvSize1"
         app:layout_constraintTop_toTopOf="@+id/textViewSize"
     />
     <TextView
-        android:id="@+id/tvThird"
+        android:id="@+id/tvSize3"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:gravity="center"
         android:text="S"
         app:layout_constraintBottom_toBottomOf="@+id/textViewSize"
-        app:layout_constraintEnd_toStartOf="@+id/tvXL"
+        app:layout_constraintEnd_toStartOf="@+id/tvSize4"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvAway" app:layout_constraintTop_toTopOf="@+id/textViewSize"/>
+        app:layout_constraintStart_toEndOf="@+id/tvSize2" app:layout_constraintTop_toTopOf="@+id/textViewSize"/>
     <TextView
-        android:id="@+id/tvXL"
+        android:id="@+id/tvSize4"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:gravity="center"
         android:text="S"
         app:layout_constraintBottom_toBottomOf="@+id/textViewSize"
-        app:layout_constraintEnd_toStartOf="@+id/tvXXL"
+        app:layout_constraintEnd_toStartOf="@+id/tvSize5"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvThird"
+        app:layout_constraintStart_toEndOf="@+id/tvSize3"
         app:layout_constraintTop_toTopOf="@+id/textViewSize"/>
     <TextView
-        android:id="@+id/tvXXL"
+        android:id="@+id/tvSize5"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginEnd="16dp"
@@ -68,6 +68,6 @@
         app:layout_constraintBottom_toBottomOf="@+id/textViewSize"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/tvXL"
+        app:layout_constraintStart_toEndOf="@+id/tvSize4"
         app:layout_constraintTop_toTopOf="@+id/textViewSize"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
