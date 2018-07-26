@@ -3,6 +3,7 @@
     <dimen name="space_medium">16dp</dimen>
     <dimen name="space_small_medium">12dp</dimen>
     <dimen name="space_micro">6dp</dimen>
+    <dimen name="space_small">8dp</dimen>
 
     <dimen name="size_thumb_item">112dp</dimen>
 
