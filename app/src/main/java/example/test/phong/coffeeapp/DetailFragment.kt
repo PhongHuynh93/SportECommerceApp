@@ -4,22 +4,30 @@ package example.test.phong.coffeeapp
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.NAME_PRODUCT
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.SIMPLE_BUTTON
 import example.test.phong.coffeeapp.model.*
+import example.test.phong.coffeeapp.utils.Divider
+import example.test.phong.coffeeapp.utils.getScreenWidth
 import example.test.phong.coffeeapp.utils.load
 import example.test.phong.coffeeapp.utils.setUpToolbar
 import example.test.phong.coffeeapp.view.SquareImageView
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.item_expandable.view.*
 import kotlinx.android.synthetic.main.item_name_product.view.*
 import kotlinx.android.synthetic.main.item_quantity.view.*
 import kotlinx.android.synthetic.main.item_size_product.view.*
@@ -27,11 +35,13 @@ import kotlinx.android.synthetic.main.item_size_product.view.*
 
 class DetailFragment : Fragment() {
     private var currentQuantity: Int = 0
+
     companion object {
         val ARGUMENT_KEY = "argument_key"
     }
+
     private val mOnClick = View.OnClickListener {
-        
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -58,18 +68,66 @@ class DetailFragment : Fragment() {
 }
 
 private class DetailSpacingItemDecoration(val context: Context, val adapter: DetailAdapter) : RecyclerView.ItemDecoration() {
-    private var mSpaceLarge: Float = context.resources.getDimension(R.dimen.space_large)
+    private var mSpaceMedium: Float = context.resources.getDimension(R.dimen.space_large)
+    private var mSpace: Float = context.resources.getDimension(R.dimen.space_medium)
+    private val mDividerPaint = Paint(ANTI_ALIAS_FLAG)
+    private val mHalfHeight: Float
+
+    init {
+        val dividerHeight = context.resources.getDimension(R.dimen.divider_height)
+        mDividerPaint.strokeWidth = dividerHeight
+        mHalfHeight = dividerHeight / 2
+        mDividerPaint.color = ContextCompat.getColor(context, R.color.grey_lightest)
+    }
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val adapterPosition = parent.getChildAdapterPosition(view)
         if (adapterPosition == RecyclerView.NO_POSITION) return
-        if (adapter.getItemViewType(adapterPosition) != NAME_PRODUCT) {
-            outRect.top = mSpaceLarge.toInt()
+
+        adapter.getItemViewType(adapterPosition).apply {
+            if (this != NAME_PRODUCT) {
+                if (this == SIMPLE_BUTTON) {
+                    outRect.top = mSpaceMedium.toInt()
+                    outRect.bottom = mSpaceMedium.toInt()
+                } else if (this == EXPANDABLE_TEXT && adapter.getItemViewType(adapterPosition - 1) == EXPANDABLE_TEXT) {
+                    outRect.bottom = mSpaceMedium.toInt()
+                } else {
+                    outRect.top = mSpaceMedium.toInt()
+                }
+            }
         }
     }
 
-    override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-        super.onDraw(c, parent, state)
+    override fun onDraw(c: Canvas, rv: RecyclerView, state: RecyclerView.State) {
+        super.onDraw(c, rv, state)
+        val count = rv.childCount
+        if (count < 2) return
+        val points = FloatArray(count * 4)
+        var previousItemNeedsDivider = false
+
+        val layoutManager = rv.layoutManager as LinearLayoutManager
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        for (i in 0 until count) {
+            val holder = rv.findViewHolderForAdapterPosition(firstVisibleItemPosition + i)
+            val needsDivider = holder is Divider
+            if (previousItemNeedsDivider && needsDivider) {
+                points[4 * i] = mSpace
+                val top = (layoutManager.getDecoratedTop(holder!!.itemView)
+                        + holder.itemView.translationY + mHalfHeight)
+                points[4 * i + 1] = top
+                points[4 * i + 2] = context.getScreenWidth() - mSpace
+                points[4 * i + 3] = top
+            }
+            previousItemNeedsDivider =
+                    if (holder is ExpandableTextVH &&
+                            (rv.findViewHolderForAdapterPosition(firstVisibleItemPosition + i - 1) is SimpleQuanlityProductVH) ||
+                            rv.findViewHolderForAdapterPosition(firstVisibleItemPosition + i - 1) is SimpleButtonVH) {
+                        false
+                    } else {
+                        needsDivider
+                    }
+        }
+        c.drawLines(points, mDividerPaint)
     }
 }
 
@@ -164,7 +222,7 @@ abstract class BaseProductVH(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bindModel(model: BaseTypeModel)
 }
 
-class NameProductVH(view: View) : BaseProductVH(view) {
+class NameProductVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel) {
         if (model is ProductModel) {
             itemView.tvName.text = model.name
@@ -174,7 +232,7 @@ class NameProductVH(view: View) : BaseProductVH(view) {
     }
 }
 
-class SizeProductVH(view: View) : BaseProductVH(view) {
+class SizeProductVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel) {
         if (model is SizeProductModel) {
             itemView.tvSize1.text = model.listSize[0].sizeName.toString()
@@ -206,18 +264,21 @@ class RelatedProductVH(view: View) : BaseProductVH(view) {
 
 }
 
-class SimpleTextVH(view: View) : BaseProductVH(view) {
+class SimpleTextVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel) {
     }
 }
 
-class SimpleButtonVH(view: View) : BaseProductVH(view) {
+class SimpleButtonVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel) {
     }
 }
 
-class ExpandableTextVH(view: View) : BaseProductVH(view) {
+class ExpandableTextVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel) {
+        if (model is ExpandableTextModel) {
+            itemView.tvExpand.text = model.showedText
+        }
     }
 }
 
