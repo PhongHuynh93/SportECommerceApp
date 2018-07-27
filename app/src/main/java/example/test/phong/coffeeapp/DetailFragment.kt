@@ -17,15 +17,19 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
-import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_CHILD
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_PARENT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.NAME_PRODUCT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.RELATED_PRODUCT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.SIMPLE_BUTTON
+import example.test.phong.coffeeapp.DetailFragment.Companion.CLOSE
+import example.test.phong.coffeeapp.DetailFragment.Companion.OPEN
 import example.test.phong.coffeeapp.model.*
 import example.test.phong.coffeeapp.utils.*
 import example.test.phong.coffeeapp.view.SquareImageView
 import kotlinx.android.synthetic.main.fragment_detail.*
-import kotlinx.android.synthetic.main.item_expandable.view.*
+import kotlinx.android.synthetic.main.item_expandable_child.view.*
+import kotlinx.android.synthetic.main.item_expandable_parent.view.*
 import kotlinx.android.synthetic.main.item_name_product.view.*
 import kotlinx.android.synthetic.main.item_quantity.view.*
 import kotlinx.android.synthetic.main.item_related_product_overview.view.*
@@ -38,6 +42,8 @@ class DetailFragment : Fragment() {
 
     companion object {
         val ARGUMENT_KEY = "argument_key"
+        const val OPEN = 180.0f
+        const val CLOSE = 0.0f
     }
 
     private val mOnClick = View.OnClickListener {
@@ -86,11 +92,11 @@ private class DetailSpacingItemDecoration(val context: Context,
         if (adapterPosition == RecyclerView.NO_POSITION) return
 
         adapter.getItemViewType(adapterPosition).apply {
-            if (this != NAME_PRODUCT) {
+            if (this != NAME_PRODUCT && this != EXPANDABLE_TEXT_CHILD) {
                 if (this == SIMPLE_BUTTON) {
                     outRect.top = mSpaceMedium.toInt()
                     outRect.bottom = mSpaceMedium.toInt()
-                } else if (this == EXPANDABLE_TEXT && adapter.getItemViewType(adapterPosition - 1) == EXPANDABLE_TEXT) {
+                } else if (this == EXPANDABLE_TEXT_PARENT && (adapter.getItemViewType(adapterPosition - 1) == EXPANDABLE_TEXT_PARENT || adapter.getItemViewType(adapterPosition - 1) == EXPANDABLE_TEXT_CHILD)) {
                     outRect.bottom = mSpaceMedium.toInt()
                 } else if (this == RELATED_PRODUCT) {
                     outRect.bottom = mSpaceMedium.toInt()
@@ -200,19 +206,13 @@ class DetailAdapter(private val chosenProduct: ProductModel,
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseProductVH {
         return when (viewType) {
-            BaseTypeModel.NAME_PRODUCT -> NameProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_name_product,
-                                                                                                    parent,
-                                                                                                    false))
+            BaseTypeModel.NAME_PRODUCT -> NameProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_name_product, parent, false))
             BaseTypeModel.SIZE_PRODUCT -> SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product,
                                                                                                     parent,
                                                                                                     false))
-            BaseTypeModel.KIT_PRODUCT -> KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product,
-                                                                                                  parent,
-                                                                                                  false))
+            BaseTypeModel.KIT_PRODUCT -> KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
             BaseTypeModel.SIMPLE_QUANTITY -> {
-                val vh = SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity,
-                                                                                             parent,
-                                                                                             false))
+                val vh = SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
                 vh.itemView.tvIncrease.setOnClickListener {
                     val itemAtPos = mDataList[vh.adapterPosition]
                     if (itemAtPos is QuantityProductModel) {
@@ -231,19 +231,38 @@ class DetailAdapter(private val chosenProduct: ProductModel,
                 }
                 return vh
             }
-            BaseTypeModel.EXPANDABLE_TEXT -> ExpandableTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable,
-                                                                                                          parent,
-                                                                                                          false))
-            BaseTypeModel.SIMPLE_BUTTON -> SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button,
-                                                                                                      parent,
-                                                                                                      false))
-            BaseTypeModel.SIMPLE_TEXT -> SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text,
-                                                                                                  parent,
-                                                                                                  false))
+            BaseTypeModel.EXPANDABLE_TEXT_PARENT -> {
+                val vh = ExpandableTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable_parent, parent, false))
+                vh.itemView.setOnClickListener {
+                    val pos = vh.adapterPosition
+                    val itemAtPos = mDataList[pos]
+                    if (itemAtPos is ExpandableTextModel) {
+                        if (itemAtPos.isExpanded) {
+                            val startPos = pos + 1
+                            if (mDataList[startPos].getType() == EXPANDABLE_TEXT_CHILD) {
+                                mDataList.removeAt(startPos)
+                                vh.itemView.imgvExpand.animate().rotation(CLOSE).start()
+                                notifyItemRangeRemoved(startPos, 1)
+                                itemAtPos.isExpanded = false
+                            }
+                        } else {
+                            val startPos = pos + 1
+                            if (mDataList[startPos].getType() != EXPANDABLE_TEXT_CHILD) {
+                                mDataList.add(startPos, ExpandableTextModelChild(itemAtPos.hiddenText))
+                                vh.itemView.imgvExpand.animate().rotation(OPEN).start()
+                                notifyItemRangeInserted(startPos, 1)
+                                itemAtPos.isExpanded = true
+                            }
+                        }
+                    }
+                }
+                return vh
+            }
+            BaseTypeModel.EXPANDABLE_TEXT_CHILD -> return ExpandableChildTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable_child, parent, false))
+            BaseTypeModel.SIMPLE_BUTTON -> SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
+            BaseTypeModel.SIMPLE_TEXT -> SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
             BaseTypeModel.RELATED_PRODUCT -> {
-                val relatedProductVH = RelatedProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_related_product_rcv,
-                                                                                                    parent,
-                                                                                                    false))
+                val relatedProductVH = RelatedProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_related_product_rcv, parent, false))
                 relatedProductVH.itemView.rcv.apply {
                     layoutManager = LinearLayoutManager(parent.context, LinearLayoutManager.HORIZONTAL, false).apply {
                         initialPrefetchItemCount = 4 // for child rcv, set 4 items
@@ -372,7 +391,15 @@ class SimpleButtonVH(view: View) : BaseProductVH(view), Divider {
 class ExpandableTextVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel) {
         if (model is ExpandableTextModel) {
-            itemView.tvExpand.text = model.showedText
+            itemView.tvExpand.setTextFuture(model.showedText)
+        }
+    }
+}
+
+class ExpandableChildTextVH(view: View) : BaseProductVH(view) {
+    override fun bindModel(model: BaseTypeModel) {
+        if (model is ExpandableTextModelChild) {
+            itemView.tvHiddenText.setTextFuture(model.hiddenText)
         }
     }
 }

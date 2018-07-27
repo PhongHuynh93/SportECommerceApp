@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.core.text.PrecomputedTextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import example.test.phong.coffeeapp.model.ProductModel
 import example.test.phong.coffeeapp.utils.load
+import example.test.phong.coffeeapp.utils.setTextFuture
 import example.test.phong.coffeeapp.utils.setUpToolbar
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.item_product.view.*
@@ -71,8 +70,7 @@ class SearchAdapter(val listener:(view: View) -> Unit) : RecyclerView.Adapter<Se
      */
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
         holder.itemView.imgvThumb.load("https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg")
-        holder.itemView.tvProductName.setTextFuture(PrecomputedTextCompat.getTextFuture("áo thun anroi mẫu 22  áo thun anroi mẫu 22   áo thun anroi mẫu 22",
-                                                                                        TextViewCompat.getTextMetricsParams(holder.itemView.tvProductName), null))
+        holder.itemView.tvProductName.setTextFuture("áo thun anroi mẫu 22  áo thun anroi mẫu 22   áo thun anroi mẫu 22")
     }
 
 }
