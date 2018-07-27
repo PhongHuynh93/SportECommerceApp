@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.text.PrecomputedTextCompat
+import androidx.core.widget.TextViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,8 +66,13 @@ class SearchAdapter(val listener:(view: View) -> Unit) : RecyclerView.Adapter<Se
         return 100
     }
 
+    /**
+     * <a href="https://medium.com/google-developers/prefetch-text-layout-in-recyclerview-4acf9103f438">
+     */
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
         holder.itemView.imgvThumb.load("https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg")
+        holder.itemView.tvProductName.setTextFuture(PrecomputedTextCompat.getTextFuture("áo thun anroi mẫu 22  áo thun anroi mẫu 22   áo thun anroi mẫu 22",
+                                                                                        TextViewCompat.getTextMetricsParams(holder.itemView.tvProductName), null))
     }
 
 }
