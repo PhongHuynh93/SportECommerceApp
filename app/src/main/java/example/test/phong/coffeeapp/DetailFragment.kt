@@ -8,9 +8,7 @@ import android.graphics.Paint
 import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -39,6 +37,8 @@ import kotlinx.android.synthetic.main.item_related_product_rcv.view.*
 import kotlinx.android.synthetic.main.item_size_product.view.*
 
 
+
+
 class DetailFragment : Fragment() {
     private var currentQuantity: Int = 0
 
@@ -50,6 +50,11 @@ class DetailFragment : Fragment() {
 
     private val mOnClick = View.OnClickListener {
 
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -72,6 +77,16 @@ class DetailFragment : Fragment() {
             adapter = DetailAdapter(chosenProduct)
             addItemDecoration(DetailSpacingItemDecoration(context, adapter as DetailAdapter))
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return super.onOptionsItemSelected(item)
+
     }
 }
 

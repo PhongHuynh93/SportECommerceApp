@@ -3,15 +3,15 @@ package example.test.phong.coffeeapp
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.core.graphics.alpha
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
+import example.test.phong.coffeeapp.R.id.*
 import example.test.phong.coffeeapp.model.ProductModel
 import example.test.phong.coffeeapp.utils.loadRounded
 import example.test.phong.coffeeapp.utils.setTextFuture
@@ -21,6 +21,17 @@ import kotlinx.android.synthetic.main.item_product.view.*
 
 class SearchFragment : Fragment() {
     private val TAG = "SearchFragment"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater!!.inflate(R.menu.main, menu)
+        return super.onCreateOptionsMenu(menu, inflater)
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
