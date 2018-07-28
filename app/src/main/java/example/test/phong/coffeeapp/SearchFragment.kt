@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
 import example.test.phong.coffeeapp.model.ProductModel
-import example.test.phong.coffeeapp.utils.load
+import example.test.phong.coffeeapp.utils.loadRounded
 import example.test.phong.coffeeapp.utils.setTextFuture
 import example.test.phong.coffeeapp.utils.setUpToolbar
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -69,7 +69,7 @@ class SearchAdapter(val listener:(view: View) -> Unit) : RecyclerView.Adapter<Se
      * <a href="https://medium.com/google-developers/prefetch-text-layout-in-recyclerview-4acf9103f438">
      */
     override fun onBindViewHolder(holder: SearchVH, position: Int) {
-        holder.itemView.imgvThumb.load("https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg")
+        holder.itemView.imgvThumb.loadRounded("https://i.pinimg.com/originals/5d/56/a8/5d56a80ab39b1f760e0b5d42a3aa9554.jpg", holder.itemView.resources.getDimension(R.dimen.radius))
         holder.itemView.tvProductName.setTextFuture("áo thun anroi mẫu 22  áo thun anroi mẫu 22   áo thun anroi mẫu 22")
     }
 
