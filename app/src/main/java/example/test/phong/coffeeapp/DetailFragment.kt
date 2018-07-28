@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_CHILD
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_PARENT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_PARENT_DIVIDER
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.NAME_PRODUCT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.RELATED_PRODUCT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.SIMPLE_BUTTON
+import example.test.phong.coffeeapp.BaseTypeModel.Companion.SIMPLE_QUANTITY
 import example.test.phong.coffeeapp.DetailFragment.Companion.CLOSE
 import example.test.phong.coffeeapp.DetailFragment.Companion.OPEN
 import example.test.phong.coffeeapp.model.*
@@ -96,7 +98,11 @@ private class DetailSpacingItemDecoration(val context: Context,
                 if (this == SIMPLE_BUTTON) {
                     outRect.top = mSpaceMedium.toInt()
                     outRect.bottom = mSpaceMedium.toInt()
-                } else if (this == EXPANDABLE_TEXT_PARENT_DIVIDER) {
+                } else if (this == EXPANDABLE_TEXT_PARENT_DIVIDER ||
+                        (this == EXPANDABLE_TEXT_PARENT)) {
+                } else if (this == SIMPLE_QUANTITY) {
+                    outRect.top = mSpaceMedium.toInt()
+                    outRect.bottom = mSpaceMedium.toInt()
                 } else if (this == RELATED_PRODUCT) {
                     outRect.bottom = mSpaceMedium.toInt()
                     outRect.top = mSpaceMedium.toInt()
@@ -318,9 +324,7 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
         notifyDataSetChanged()
     }
 
-    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
-
-    }
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 }
 
 

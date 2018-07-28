@@ -44,7 +44,7 @@ class SearchFragment : Fragment() {
         rcv?.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = SearchAdapter {
-                val testUrl = "https://media.gucci.com/style/DarkGray_Center_0_0_650x650/1519963209/457095_X5L89_9234_001_100_0000_Light-Oversize-T-shirt-with-Gucci-logo.jpg"
+                val testUrl = "https://i.pinimg.com/originals/5d/56/a8/5d56a80ab39b1f760e0b5d42a3aa9554.jpg"
                 val bundle = bundleOf(DetailFragment.ARGUMENT_KEY to ProductModel(testUrl, "Brasil Home 2018", "adias", "$165"))
                 Navigation.findNavController(it).navigate(R.id.action_searchFragment_to_detailFragment, bundle)
             }
@@ -52,7 +52,7 @@ class SearchFragment : Fragment() {
     }
 }
 
-class SearchAdapter(val listener:(view: View) -> Unit) : RecyclerView.Adapter<SearchVH>() {
+class SearchAdapter(val listener: (view: View) -> Unit) : RecyclerView.Adapter<SearchVH>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchVH {
         val searchVH = SearchVH(LayoutInflater.from(parent.context).inflate(R.layout.item_product, parent, false))
         searchVH.itemView.setOnClickListener {
