@@ -1,6 +1,7 @@
 package example.test.phong.coffeeapp
 
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.graphics.Paint.ANTI_ALIAS_FLAG
@@ -15,6 +16,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
@@ -169,6 +173,8 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity!!.setUpToolbar(toolbar)
+        NavigationUI.setupWithNavController(toolbar, view.findNavController())
+
         mChosenProduct = arguments!!.getParcelable<ProductModel>(ARGUMENT_KEY)
 
         vg?.apply {
@@ -189,15 +195,16 @@ class DetailFragment : Fragment() {
         super.onCreateOptionsMenu(menu, inflater)
         inflater!!.inflate(R.menu.main, menu)
         Handler().post {
-            mCartIcon = toolbar.findViewById<View>(R.id.addToCart)
-            val actionView = menu!!.findItem(R.id.addToCart).actionView
+            mCartIcon = toolbar.findViewById<View>(R.id.cartFragment)
+            val actionView = menu!!.findItem(R.id.cartFragment).actionView
             mQuantityIcon = actionView.findViewById<TextView>(R.id.tvCount)
+            mCartIcon.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.cartFragment))
         }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return super.onOptionsItemSelected(item)
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(activity as Activity, R.id.main_content)) || super.onOptionsItemSelected(item)
     }
 }
 

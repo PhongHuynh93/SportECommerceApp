@@ -6,6 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" android:layout_marginStart="32dp"
     android:layout_marginEnd="32dp"
-    android:elevation="0dp" android:text="add to cart" app:cornerRadius="20dp">
-
-</com.google.android.material.button.MaterialButton>
+    android:stateListAnimator="@animator/selector_animator"
+    android:elevation="0dp" android:text="add to cart" app:cornerRadius="20dp"/>

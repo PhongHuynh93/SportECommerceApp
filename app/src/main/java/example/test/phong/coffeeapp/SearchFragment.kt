@@ -1,17 +1,17 @@
 package example.test.phong.coffeeapp
 
 
+import android.app.Activity
 import android.os.Bundle
-import android.util.Log
+import android.os.Handler
 import android.view.*
-import androidx.core.graphics.alpha
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.AppBarLayout
-import example.test.phong.coffeeapp.R.id.*
 import example.test.phong.coffeeapp.model.ProductModel
 import example.test.phong.coffeeapp.utils.loadRounded
 import example.test.phong.coffeeapp.utils.setTextFuture
@@ -28,10 +28,18 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
         inflater!!.inflate(R.menu.main, menu)
-        return super.onCreateOptionsMenu(menu, inflater)
+
+        Handler().post {
+            val cartIcon = toolbar.findViewById<View>(R.id.cartFragment)
+            cartIcon.setOnClickListener(Navigation.createNavigateOnClickListener(R.id.cartFragment))
+        }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return NavigationUI.onNavDestinationSelected(item, Navigation.findNavController(activity as Activity, R.id.main_content)) || super.onOptionsItemSelected(item)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -46,10 +54,10 @@ class SearchFragment : Fragment() {
 
         appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, offset ->
             // hide the text when scroll
-            Log.e(TAG, "offset $offset")
-            val alpha = 1 + offset / rootSearchKit.height.toFloat()
-            Log.e(TAG, "alpha $alpha")
-            rootSearchKit.alpha = alpha
+            rootSearchKit.let {
+                val alpha = 1 + offset / rootSearchKit.height.toFloat()
+                rootSearchKit.alpha = alpha
+            }
         })
 
         rcv?.apply {
