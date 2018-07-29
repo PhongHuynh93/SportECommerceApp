@@ -25,6 +25,7 @@
                 android:id="@+id/vg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                tools:layout_height="200dp"
                 android:layout_marginTop="?attr/actionBarSize"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.7"/>
@@ -59,4 +60,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    <ImageView
+        android:id="@+id/imgvFakeProduct"
+        android:layout_width="@dimen/size_fake_product"
+        android:layout_height="@dimen/size_fake_product"
+        android:layout_gravity="right|top"
+        android:visibility="invisible"/>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

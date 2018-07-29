@@ -2,19 +2,26 @@ package example.test.phong.coffeeapp
 
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.graphics.Paint.ANTI_ALIAS_FLAG
-import android.graphics.Rect
 import android.os.Bundle
+import android.os.Handler
 import android.view.*
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.transition.Transition
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_CHILD
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_PARENT
 import example.test.phong.coffeeapp.BaseTypeModel.Companion.EXPANDABLE_TEXT_PARENT_DIVIDER
@@ -28,6 +35,7 @@ import example.test.phong.coffeeapp.model.*
 import example.test.phong.coffeeapp.utils.*
 import example.test.phong.coffeeapp.view.SquareImageView
 import kotlinx.android.synthetic.main.fragment_detail.*
+import kotlinx.android.synthetic.main.item_button.view.*
 import kotlinx.android.synthetic.main.item_expandable_child.view.*
 import kotlinx.android.synthetic.main.item_expandable_parent.view.*
 import kotlinx.android.synthetic.main.item_name_product.view.*
@@ -37,10 +45,13 @@ import kotlinx.android.synthetic.main.item_related_product_rcv.view.*
 import kotlinx.android.synthetic.main.item_size_product.view.*
 
 
-
-
 class DetailFragment : Fragment() {
     private var currentQuantity: Int = 0
+    private lateinit var mAdapter: DetailAdapter
+    private lateinit var mLayoutManager: LinearLayoutManager
+    private lateinit var mChosenProduct: ProductModel
+    private lateinit var mCartIcon: View
+    private lateinit var mQuantityIcon: TextView
 
     companion object {
         val ARGUMENT_KEY = "argument_key"
@@ -49,7 +60,98 @@ class DetailFragment : Fragment() {
     }
 
     private val mOnClick = View.OnClickListener {
+        when (it.id) {
+            R.id.tvIncrease -> {
+                val pos = it.getParentTagInt()
+                val itemAtPos = mAdapter.getItemAtPos(pos)
+                if (itemAtPos is QuantityProductModel) {
+                    val vh = rcv.findViewHolderForAdapterPosition(pos)
+                    vh?.let {
+                        vh.itemView.tvQuantity.setCurrentText(currentQuantity.toString())
+                        currentQuantity = itemAtPos.quantity + 1
+                        itemAtPos.quantity = currentQuantity
+                        vh.itemView.tvQuantity.setText(currentQuantity.toString())
+                    }
+                }
+            }
+            R.id.tvDecrease -> {
+                val pos = it.getParentTagInt()
+                val itemAtPos = mAdapter.getItemAtPos(pos)
+                if (itemAtPos is QuantityProductModel) {
+                    val vh = rcv.findViewHolderForAdapterPosition(pos)
+                    vh?.let {
+                        vh.itemView.tvQuantity.setCurrentText(currentQuantity.toString())
+                        currentQuantity = Math.max(0, itemAtPos.quantity - 1)
+                        itemAtPos.quantity = currentQuantity
+                        vh.itemView.tvQuantity.setText(currentQuantity.toString())
+                    }
+                }
+            }
+            R.id.bnAddToCart -> {
+                if (currentQuantity <= 0) {
+                    Toast.makeText(context, "Please add some", Toast.LENGTH_SHORT).show()
+                    return@OnClickListener
+                }
+                if (imgvFakeProduct.visibility == View.VISIBLE) return@OnClickListener
+                if (imgvFakeProduct.drawable != null) {
+                    animateFakeProductViewToCart(it)
+                    return@OnClickListener
+                }
+                val requestOptions = RequestOptions
+                        .overrideOf(resources.getDimension(R.dimen.size_fake_product).toInt())
+                        .onlyRetrieveFromCache(true)
+                Glide.with(this)
+                        .asBitmap()
+                        .load(mChosenProduct.thumb)
+                        .apply(requestOptions)
+                        .into(object : SimpleTarget<Bitmap>() {
+                            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                val drawable = RoundedBitmapDrawableFactory.create(resources, resource)
+                                drawable.isCircular = true
+                                imgvFakeProduct.setImageDrawable(drawable)
+                                animateFakeProductViewToCart(it)
+                            }
+                        })
+            }
+        }
+    }
 
+    // TODO: 7/29/2018 understand how to calculate the bezier curve here
+    private fun animateFakeProductViewToCart(startView: View) {
+        val toLocation = IntArray(2)
+        val fromLocation = IntArray(2)
+        mCartIcon.getLocationInWindow(toLocation)
+        startView.getLocationInWindow(fromLocation)
+
+        imgvFakeProduct.x = startView.width / 2f + startView.x
+        imgvFakeProduct.y = fromLocation[1].toFloat() - startView.height / 2f
+        imgvFakeProduct.visibility = View.VISIBLE
+
+        imgvFakeProduct
+                .animate()
+                .x(toLocation[0].toFloat())
+                .y(toLocation[1].toFloat())
+                .setDuration(500)
+                .setInterpolator(DecelerateInterpolator())
+                .withEndAction {
+                    if (currentQuantity <= 0) {
+                        mQuantityIcon.visibility = View.GONE
+                    } else {
+                        mQuantityIcon.text = currentQuantity.toString()
+                        mQuantityIcon.visibility = View.VISIBLE
+                        // make overshoot anim
+                        mCartIcon.scaleX = 0.7f
+                        mCartIcon.scaleY = 0.7f
+                        mCartIcon
+                                .animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(300)
+                                .setInterpolator(OvershootInterpolator(5f))
+                                .start()
+                    }
+                    imgvFakeProduct.visibility = View.GONE
+                }.start()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,25 +165,34 @@ class DetailFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_detail, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activity!!.setUpToolbar(toolbar)
-        val chosenProduct = arguments!!.getParcelable<ProductModel>(ARGUMENT_KEY)
+        mChosenProduct = arguments!!.getParcelable<ProductModel>(ARGUMENT_KEY)
 
         vg?.apply {
-            adapter = DetailPagerAdapter(chosenProduct)
+            adapter = DetailPagerAdapter(mChosenProduct)
         }
 
         rcv?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = DetailAdapter(chosenProduct)
+            mLayoutManager = LinearLayoutManager(context)
+            layoutManager = mLayoutManager
+            mAdapter = DetailAdapter(mChosenProduct, mOnClick)
+            adapter = mAdapter
             addItemDecoration(DetailSpacingItemDecoration(context, adapter as DetailAdapter))
         }
     }
 
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        super.onCreateOptionsMenu(menu, inflater)
         inflater!!.inflate(R.menu.main, menu)
-        return super.onCreateOptionsMenu(menu, inflater)
+        Handler().post {
+            mCartIcon = toolbar.findViewById<View>(R.id.addToCart)
+            val actionView = menu!!.findItem(R.id.addToCart).actionView
+            mQuantityIcon = actionView.findViewById<TextView>(R.id.tvCount)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -155,7 +266,7 @@ private class DetailSpacingItemDecoration(val context: Context,
 }
 
 class DetailAdapter(private val chosenProduct: ProductModel,
-                    private val mOnClick: View.OnClickListener? = null) : RecyclerView.Adapter<BaseProductVH>() {
+                    private val mOnClick: View.OnClickListener) : RecyclerView.Adapter<BaseProductVH>() {
     private val mDataList: MutableList<BaseTypeModel> = ArrayList()
 
     init {
@@ -248,22 +359,8 @@ class DetailAdapter(private val chosenProduct: ProductModel,
             BaseTypeModel.KIT_PRODUCT -> KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
             BaseTypeModel.SIMPLE_QUANTITY -> {
                 val vh = SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
-                vh.itemView.tvIncrease.setOnClickListener {
-                    val itemAtPos = mDataList[vh.adapterPosition]
-                    if (itemAtPos is QuantityProductModel) {
-                        vh.itemView.tvQuantity.setCurrentText(itemAtPos.quantity.toString())
-                        itemAtPos.quantity += 1
-                        vh.itemView.tvQuantity.setText(itemAtPos.quantity.toString())
-                    }
-                }
-                vh.itemView.tvDecrease.setOnClickListener {
-                    val itemAtPos = mDataList[vh.adapterPosition]
-                    if (itemAtPos is QuantityProductModel) {
-                        vh.itemView.tvQuantity.setCurrentText(itemAtPos.quantity.toString())
-                        itemAtPos.quantity = Math.max(0, itemAtPos.quantity - 1)
-                        vh.itemView.tvQuantity.setText(itemAtPos.quantity.toString())
-                    }
-                }
+                vh.itemView.tvIncrease.setOnClickListener(mOnClick)
+                vh.itemView.tvDecrease.setOnClickListener(mOnClick)
                 return vh
             }
             BaseTypeModel.EXPANDABLE_TEXT_PARENT_DIVIDER -> {
@@ -279,7 +376,11 @@ class DetailAdapter(private val chosenProduct: ProductModel,
                 return vh
             }
             BaseTypeModel.EXPANDABLE_TEXT_CHILD -> return ExpandableChildTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_expandable_child, parent, false))
-            BaseTypeModel.SIMPLE_BUTTON -> SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
+            BaseTypeModel.SIMPLE_BUTTON -> {
+                val vh = SimpleButtonVH(LayoutInflater.from(parent.context).inflate(R.layout.item_button, parent, false))
+                vh.itemView.bnAddToCart.setOnClickListener(mOnClick)
+                return vh
+            }
             BaseTypeModel.SIMPLE_TEXT -> SimpleTextVH(LayoutInflater.from(parent.context).inflate(R.layout.item_text, parent, false))
             BaseTypeModel.RELATED_PRODUCT -> {
                 val relatedProductVH = RelatedProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_related_product_rcv, parent, false))
@@ -301,7 +402,11 @@ class DetailAdapter(private val chosenProduct: ProductModel,
     override fun getItemCount() = mDataList.size
 
     override fun onBindViewHolder(holder: BaseProductVH, position: Int) {
-        holder.bindModel(mDataList[position])
+        holder.bindModel(mDataList[position], position)
+    }
+
+    fun getItemAtPos(pos: Int): BaseTypeModel {
+        return mDataList[pos]
     }
 }
 
@@ -344,11 +449,11 @@ class RelatedProductAdapter : RecyclerView.Adapter<RelatedProductAdapter.ViewHol
 
 
 abstract class BaseProductVH(view: View) : RecyclerView.ViewHolder(view) {
-    abstract fun bindModel(model: BaseTypeModel)
+    abstract fun bindModel(model: BaseTypeModel, position: Int)
 }
 
 class NameProductVH(view: View) : BaseProductVH(view), Divider {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
         if (model is ProductModel) {
             itemView.tvName.text = model.name
             itemView.tvBrand.text = model.brand
@@ -358,7 +463,7 @@ class NameProductVH(view: View) : BaseProductVH(view), Divider {
 }
 
 class SizeProductVH(view: View) : BaseProductVH(view), Divider {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
         if (model is SizeProductModel) {
             itemView.tvSize1.text = model.listSize[0].sizeName.toString()
             itemView.tvSize1.setTextColor(Color.parseColor("#4d455a64"))
@@ -384,7 +489,7 @@ class SizeProductVH(view: View) : BaseProductVH(view), Divider {
 }
 
 class RelatedProductVH(view: View) : BaseProductVH(view) {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
         if (model is RelatedProductModel) {
             itemView.rcv.adapter.apply {
                 if (this is RelatedProductAdapter) {
@@ -397,18 +502,18 @@ class RelatedProductVH(view: View) : BaseProductVH(view) {
 }
 
 class SimpleTextVH(view: View) : BaseProductVH(view), Divider {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
     }
 }
 
 class SimpleButtonVH(view: View) : BaseProductVH(view), Divider {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
     }
 }
 
 open class ExpandableTextVH(view: View) : BaseProductVH(view) {
 
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
         if (model is ExpandableTextModel) {
             itemView.tvExpand.setTextFuture(model.showedText)
         }
@@ -418,7 +523,7 @@ open class ExpandableTextVH(view: View) : BaseProductVH(view) {
 class ExpandableTextDividerVH(view: View) : ExpandableTextVH(view), Divider
 
 class ExpandableChildTextVH(view: View) : BaseProductVH(view) {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
         if (model is ExpandableTextModelChild) {
             itemView.tvHiddenText.setTextFuture(model.hiddenText)
         }
@@ -426,15 +531,16 @@ class ExpandableChildTextVH(view: View) : BaseProductVH(view) {
 }
 
 class SimpleQuanlityProductVH(view: View) : BaseProductVH(view) {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
         if (model is QuantityProductModel) {
+            itemView.tag = position
             itemView.tvQuantity.setCurrentText(model.quantity.toString())
         }
     }
 }
 
 class KitProductVH(view: View) : BaseProductVH(view) {
-    override fun bindModel(model: BaseTypeModel) {
+    override fun bindModel(model: BaseTypeModel, position: Int) {
     }
 }
 

@@ -11,4 +11,5 @@
     <dimen name="space_large">24dp</dimen>
     <dimen name="divider_height">1dp</dimen>
     <dimen name="radius">3dp</dimen>
+    <dimen name="size_fake_product">42dp</dimen>
 </resources>
