@@ -12,4 +12,5 @@
     <dimen name="divider_height">1dp</dimen>
     <dimen name="radius">3dp</dimen>
     <dimen name="size_fake_product">42dp</dimen>
+    <dimen name="size_thumb_item_small">56dp</dimen>
 </resources>

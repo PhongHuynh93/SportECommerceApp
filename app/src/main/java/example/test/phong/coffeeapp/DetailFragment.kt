@@ -8,6 +8,7 @@ import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.ImageView
@@ -42,6 +43,7 @@ import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.item_button.view.*
 import kotlinx.android.synthetic.main.item_expandable_child.view.*
 import kotlinx.android.synthetic.main.item_expandable_parent.view.*
+import kotlinx.android.synthetic.main.item_kit_product.view.*
 import kotlinx.android.synthetic.main.item_name_product.view.*
 import kotlinx.android.synthetic.main.item_quantity.view.*
 import kotlinx.android.synthetic.main.item_related_product_overview.view.*
@@ -64,6 +66,9 @@ class DetailFragment : Fragment() {
     }
 
     private val mOnClick = View.OnClickListener {
+        val anim = AnimationUtils.loadAnimation(context, R.anim.bounce)
+        anim.interpolator = OvershootInterpolator()
+        it.startAnimation(anim)
         when (it.id) {
             R.id.tvIncrease -> {
                 val pos = it.getParentTagInt()
@@ -362,8 +367,22 @@ class DetailAdapter(private val chosenProduct: ProductModel,
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseProductVH {
         return when (viewType) {
             BaseTypeModel.NAME_PRODUCT -> NameProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_name_product, parent, false))
-            BaseTypeModel.SIZE_PRODUCT -> SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false))
-            BaseTypeModel.KIT_PRODUCT -> KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
+            BaseTypeModel.SIZE_PRODUCT -> {
+                val vh = SizeProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_size_product, parent, false))
+                vh.itemView.tvSize1.setOnClickListener(mOnClick)
+                vh.itemView.tvSize2.setOnClickListener(mOnClick)
+                vh.itemView.tvSize3.setOnClickListener(mOnClick)
+                vh.itemView.tvSize4.setOnClickListener(mOnClick)
+                vh.itemView.tvSize5.setOnClickListener(mOnClick)
+                return vh
+            }
+            BaseTypeModel.KIT_PRODUCT -> {
+                val vh = KitProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_kit_product, parent, false))
+                vh.itemView.tvHome.setOnClickListener(mOnClick)
+                vh.itemView.tvAway.setOnClickListener(mOnClick)
+                vh.itemView.tvThird.setOnClickListener(mOnClick)
+                return vh
+            }
             BaseTypeModel.SIMPLE_QUANTITY -> {
                 val vh = SimpleQuanlityProductVH(LayoutInflater.from(parent.context).inflate(R.layout.item_quantity, parent, false))
                 vh.itemView.tvIncrease.setOnClickListener(mOnClick)
