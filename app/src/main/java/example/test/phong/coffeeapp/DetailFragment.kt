@@ -8,6 +8,7 @@ import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.os.Bundle
 import android.os.Handler
 import android.view.*
+import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
@@ -49,6 +50,7 @@ import kotlinx.android.synthetic.main.item_quantity.view.*
 import kotlinx.android.synthetic.main.item_related_product_overview.view.*
 import kotlinx.android.synthetic.main.item_related_product_rcv.view.*
 import kotlinx.android.synthetic.main.item_size_product.view.*
+import kotlinx.android.synthetic.main.item_text.view.*
 
 
 class DetailFragment : Fragment() {
@@ -58,17 +60,23 @@ class DetailFragment : Fragment() {
     private lateinit var mChosenProduct: ProductModel
     private lateinit var mCartIcon: View
     private lateinit var mQuantityIcon: TextView
+    val mClickAnim: Animation by lazy {
+        val anim = AnimationUtils.loadAnimation(context, R.anim.bounce)
+        anim.interpolator = OvershootInterpolator()
+        anim
+    }
+
+    val myLazyString: String by lazy { "Hello" }
+
 
     companion object {
-        val ARGUMENT_KEY = "argument_key"
+        const val ARGUMENT_KEY = "argument_key"
         const val OPEN = 180.0f
         const val CLOSE = 0.0f
     }
 
     private val mOnClick = View.OnClickListener {
-        val anim = AnimationUtils.loadAnimation(context, R.anim.bounce)
-        anim.interpolator = OvershootInterpolator()
-        it.startAnimation(anim)
+        it.startAnimation(mClickAnim)
         when (it.id) {
             R.id.tvIncrease -> {
                 val pos = it.getParentTagInt()
@@ -148,16 +156,7 @@ class DetailFragment : Fragment() {
                     } else {
                         mQuantityIcon.text = currentQuantity.toString()
                         mQuantityIcon.visibility = View.VISIBLE
-                        // make overshoot anim
-                        mCartIcon.scaleX = 0.7f
-                        mCartIcon.scaleY = 0.7f
-                        mCartIcon
-                                .animate()
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setDuration(300)
-                                .setInterpolator(OvershootInterpolator(5f))
-                                .start()
+                        mCartIcon.startAnimation(mClickAnim)
                     }
                     imgvFakeProduct.visibility = View.GONE
                 }.start()
@@ -306,7 +305,7 @@ class DetailAdapter(private val chosenProduct: ProductModel,
                                                  "The colors combined with the exaggerated chevron motif on this bowling shirt give a nostalgic retro feel. Displayed in the graphic font of SEGA, the Gucci patch is an added detail that evokes the feeling of worn-in bowling shoes and the distinctive sound of pins dropping against the wood floor."))
         mDataList.add(ExpandableTextModel("Shipping & Returns",
                                           "Click on STORE LOCATOR to find stores nearest to you"))
-        mDataList.add(HeaderModel("You May Also Like"))
+        mDataList.add(TextModel("You May Also Like"))
         mDataList.add(RelatedProductModel(arrayListOf(
                 ProductModel("https://media.gucci.com/style/DarkGray_South_0_160_316x316/1519961405/469307_X9D35_9230_001_100_0000_Light-Oversize-collared-T-shirt-with-Gucci-logo.jpg",
                              "Brasil Home 2018",
@@ -529,6 +528,9 @@ class RelatedProductVH(view: View) : BaseProductVH(view) {
 
 class SimpleTextVH(view: View) : BaseProductVH(view), Divider {
     override fun bindModel(model: BaseTypeModel, position: Int) {
+        if (model is TextModel) {
+            itemView.textView7.text = model.text
+        }
     }
 }
 

@@ -22,7 +22,7 @@
 
     </fragment>
     <fragment android:id="@+id/cartFragment"
-              android:name="example.test.phong.coffeeapp.CartFragment" android:label="fragment_cart"
+              android:name="example.test.phong.coffeeapp.CartFragment" android:label="Your Cart"
               tools:layout="@layout/fragment_cart">
         <action android:id="@+id/action_cartFragment_to_shippingFragment"
                 app:destination="@id/shippingFragment"/>

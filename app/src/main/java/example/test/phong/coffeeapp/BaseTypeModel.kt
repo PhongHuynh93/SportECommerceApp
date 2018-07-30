@@ -14,5 +14,8 @@ interface BaseTypeModel {
         const val RELATED_PRODUCT: Int = 6
         const val EXPANDABLE_TEXT_CHILD: Int = 8
         const val EXPANDABLE_TEXT_PARENT_DIVIDER: Int = 9
+        const val CART_PRODUCT: Int = 10
+        const val DIVIDER: Int = 11
+
     }
 }
